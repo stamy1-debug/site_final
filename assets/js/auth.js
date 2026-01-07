@@ -2,7 +2,7 @@
 
 // Sign up with email and password
 async function signUp(email, password, fullName) {
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await supabaseClient.auth.signUp({
     email: email,
     password: password,
     options: {
@@ -21,7 +21,7 @@ async function signUp(email, password, fullName) {
 
 // Sign in with email and password
 async function signIn(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
     email: email,
     password: password
   });
@@ -35,7 +35,7 @@ async function signIn(email, password) {
 
 // Reset password
 async function resetPassword(email) {
-  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+  const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
     redirectTo: `${window.location.origin}/reset-password.html`,
   });
 
@@ -48,7 +48,7 @@ async function resetPassword(email) {
 
 // Update user profile
 async function updateProfile(updates) {
-  const { data, error } = await supabase.auth.updateUser({
+  const { data, error } = await supabaseClient.auth.updateUser({
     data: updates
   });
 

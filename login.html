@@ -178,25 +178,29 @@
   <script src="assets/js/auth.js"></script>
   
   <script>
-    const loginForm = document.getElementById('login-form');
-    const signupForm = document.getElementById('signup-form');
-    const toggleLink = document.getElementById('toggle-link');
-    const toggleText = document.getElementById('toggle-text');
-    const authSubtitle = document.getElementById('auth-subtitle');
-    const errorMessage = document.getElementById('error-message');
-    const successMessage = document.getElementById('success-message');
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginForm = document.getElementById('login-form');
+      const signupForm = document.getElementById('signup-form');
+      const toggleLink = document.getElementById('toggle-link');
+      const toggleText = document.getElementById('toggle-text');
+      const authSubtitle = document.getElementById('auth-subtitle');
+      const errorMessage = document.getElementById('error-message');
+      const successMessage = document.getElementById('success-message');
 
-    let isLoginMode = true;
+      let isLoginMode = true;
 
-    // Check if user is already logged in
-    checkAuth().then(session => {
-      if (session) {
-        window.location.href = '/ventures/index.html';
-      }
-    });
+      // Check if user is already logged in
+      checkAuth().then(session => {
+        if (session) {
+          window.location.href = '/ventures/index.html';
+        }
+      }).catch(err => {
+        console.log('Auth check error:', err);
+      });
 
-    // Toggle between login and signup
-    toggleLink.addEventListener('click', () => {
+      // Toggle between login and signup
+      toggleLink.addEventListener('click', (e) => {
+        e.preventDefault();
       isLoginMode = !isLoginMode;
       
       if (isLoginMode) {
@@ -213,11 +217,11 @@
         authSubtitle.textContent = 'Creează un cont nou';
       }
       
-      hideMessages();
-    });
+        hideMessages();
+      });
 
-    // Login form submission
-    loginForm.addEventListener('submit', async (e) => {
+      // Login form submission
+      loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideMessages();
 
@@ -239,11 +243,11 @@
         showError(result.error);
         btn.disabled = false;
         btn.textContent = 'Intră în cont';
-      }
-    });
+        }
+      });
 
-    // Signup form submission
-    signupForm.addEventListener('submit', async (e) => {
+      // Signup form submission
+      signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideMessages();
 
@@ -276,24 +280,25 @@
       } else {
         showError(result.error);
         btn.disabled = false;
-        btn.textContent = 'Creează cont';
+          btn.textContent = 'Creează cont';
+        }
+      });
+
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+      }
+
+      function showSuccess(message) {
+        successMessage.textContent = message;
+        successMessage.style.display = 'block';
+      }
+
+      function hideMessages() {
+        errorMessage.style.display = 'none';
+        successMessage.style.display = 'none';
       }
     });
-
-    function showError(message) {
-      errorMessage.textContent = message;
-      errorMessage.style.display = 'block';
-    }
-
-    function showSuccess(message) {
-      successMessage.textContent = message;
-      successMessage.style.display = 'block';
-    }
-
-    function hideMessages() {
-      errorMessage.style.display = 'none';
-      successMessage.style.display = 'none';
-    }
   </script>
 </body>
 </html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Mate cu succes</title>
+  <link rel="stylesheet" href="assets/css/main.0e0cf95b352066c8b8b0.css">
+  <style>
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .auth-box {
+      background: white;
+      padding: 3rem;
+      border-radius: 1rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 450px;
+      width: 100%;
+    }
+    .auth-title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      color: #333;
+    }
+    .auth-subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 2rem;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #333;
+    }
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    .btn-auth {
+      width: 100%;
+      padding: 0.875rem;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn-auth:hover {
+      background: #5568d3;
+    }
+    .btn-auth:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .toggle-form {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: #666;
+    }
+    .toggle-link {
+      color: #667eea;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .toggle-link:hover {
+      text-decoration: underline;
+    }
+    .error-message {
+      background: #fee;
+      color: #c33;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .success-message {
+      background: #efe;
+      color: #3c3;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .back-home {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .back-home a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .back-home a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-box">
+      <h1 class="auth-title">Mate cu succes</h1>
+      <p class="auth-subtitle" id="auth-subtitle">Conectează-te la contul tău</p>
+      
+      <div id="error-message" class="error-message"></div>
+      <div id="success-message" class="success-message"></div>
+
+      <!-- Login Form -->
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email</label>
+          <input type="email" id="login-email" class="form-input" required placeholder="exemplu@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-password">Parolă</label>
+          <input type="password" id="login-password" class="form-input" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-auth" id="login-btn">Intră în cont</button>
+      </form>
+
+      <!-- Signup Form (hidden by default) -->
+      <form id="signup-form" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" for="signup-name">Nume complet</label>
+          <input type="text" id="signup-name" class="form-input" required placeholder="Ion Popescu">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signup-email">Email</label>
+          <input type="email" id="signup-email" class="form-input" required placeholder="exemplu@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signup-password">Parolă</label>
+          <input type="password" id="signup-password" class="form-input" required placeholder="Minim 6 caractere">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="signup-password-confirm">Confirmă parola</label>
+          <input type="password" id="signup-password-confirm" class="form-input" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-auth" id="signup-btn">Creează cont</button>
+      </form>
+
+      <div class="toggle-form">
+        <span id="toggle-text">Nu ai cont?</span>
+        <a class="toggle-link" id="toggle-link">Înregistrează-te</a>
+      </div>
+
+      <div class="back-home">
+        <a href="/index.html">← Înapoi la pagina principală</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  
+  <script>
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const toggleLink = document.getElementById('toggle-link');
+    const toggleText = document.getElementById('toggle-text');
+    const authSubtitle = document.getElementById('auth-subtitle');
+    const errorMessage = document.getElementById('error-message');
+    const successMessage = document.getElementById('success-message');
+
+    let isLoginMode = true;
+
+    // Check if user is already logged in
+    checkAuth().then(session => {
+      if (session) {
+        window.location.href = '/ventures/index.html';
+      }
+    });
+
+    // Toggle between login and signup
+    toggleLink.addEventListener('click', () => {
+      isLoginMode = !isLoginMode;
+      
+      if (isLoginMode) {
+        loginForm.style.display = 'block';
+        signupForm.style.display = 'none';
+        toggleText.textContent = 'Nu ai cont?';
+        toggleLink.textContent = 'Înregistrează-te';
+        authSubtitle.textContent = 'Conectează-te la contul tău';
+      } else {
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'block';
+        toggleText.textContent = 'Ai deja cont?';
+        toggleLink.textContent = 'Intră în cont';
+        authSubtitle.textContent = 'Creează un cont nou';
+      }
+      
+      hideMessages();
+    });
+
+    // Login form submission
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideMessages();
+
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const btn = document.getElementById('login-btn');
+
+      btn.disabled = true;
+      btn.textContent = 'Se încarcă...';
+
+      const result = await signIn(email, password);
+
+      if (result.success) {
+        showSuccess('Autentificare reușită! Redirecționare...');
+        setTimeout(() => {
+          window.location.href = '/ventures/index.html';
+        }, 1000);
+      } else {
+        showError(result.error);
+        btn.disabled = false;
+        btn.textContent = 'Intră în cont';
+      }
+    });
+
+    // Signup form submission
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideMessages();
+
+      const name = document.getElementById('signup-name').value;
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      const confirmPassword = document.getElementById('signup-password-confirm').value;
+      const btn = document.getElementById('signup-btn');
+
+      if (password !== confirmPassword) {
+        showError('Parolele nu se potrivesc!');
+        return;
+      }
+
+      if (password.length < 6) {
+        showError('Parola trebuie să aibă minim 6 caractere!');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Se creează contul...';
+
+      const result = await signUp(email, password, name);
+
+      if (result.success) {
+        showSuccess('Cont creat cu succes! Verifică emailul pentru confirmare.');
+        signupForm.reset();
+        btn.disabled = false;
+        btn.textContent = 'Creează cont';
+      } else {
+        showError(result.error);
+        btn.disabled = false;
+        btn.textContent = 'Creează cont';
+      }
+    });
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.style.display = 'block';
+    }
+
+    function showSuccess(message) {
+      successMessage.textContent = message;
+      successMessage.style.display = 'block';
+    }
+
+    function hideMessages() {
+      errorMessage.style.display = 'none';
+      successMessage.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

@@ -13,6 +13,7 @@
 <script src="../assets/js/supabase-config.js"></script>
 <script src="../assets/js/auth.js"></script>
 <script src="../assets/js/protect-route.js"></script>
+<script src="../assets/js/profile-manager.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(function (registrations) {
@@ -60,8 +61,8 @@
           </div>
         </div>
         <div class="text-center md:text-left flex-grow">
-          <h3 class="text-[2rem] md:text-[2.4rem] font-medium mb-8">Ion Popescu</h3>
-          <p class="text-[#666666] mb-16">Membru din decembrie 2024</p>
+          <h3 class="text-[2rem] md:text-[2.4rem] font-medium mb-8" data-user-name>Ion Popescu</h3>
+          <p class="text-[#666666] mb-16" data-member-since>Membru din decembrie 2024</p>
           <button class="text-[#000000] hover:opacity-70 transition-opacity text-base font-medium border border-[#E0E0E0] px-20 py-8 rounded hover:bg-[#F9F9F9]">Schimbă poza de profil</button>
         </div>
       </div>
@@ -70,22 +71,36 @@
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
           <div class="text-base md:text-md font-medium text-[#000000]">Nume Complet</div>
-          <div class="text-base md:text-md text-[#666666]">Ion Popescu</div>
-          <div class="text-base md:text-md"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity">Editează</a></div>
-          <div class="text-base md:text-md text-[#666666] text-right">Ultima actualizare: 15 Dec 2025</div>
+          <div class="text-base md:text-md text-[#666666]" data-user-name>Ion Popescu</div>
+          <div class="text-base md:text-md"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity" data-edit-profile>Editează</a></div>
+          <div class="text-base md:text-md text-[#666666] text-right" data-last-update>Ultima actualizare: 15 Dec 2025</div>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
           <div class="text-base md:text-md font-medium text-[#000000]">Email</div>
-          <div class="text-base md:text-md text-[#666666]">ion.popescu@email.com</div>
-          <div class="text-base md:text-md"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity">Editează</a></div>
+          <div class="text-base md:text-md text-[#666666]" data-user-email>ion.popescu@email.com</div>
+          <div class="text-base md:text-md"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity" data-edit-profile>Editează</a></div>
           <div class="text-base md:text-md text-[#666666] text-right">Verificat</div>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
           <div class="text-base md:text-md font-medium text-[#000000]">Telefon</div>
-          <div class="text-base md:text-md text-[#666666]">+40 712 345 678</div>
-          <div class="text-base md:text-md"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity">Editează</a></div>
+          <div class="text-base md:text-md text-[#666666]" data-user-phone>+40 712 345 678</div>
+          <div class="text-base md:text-md"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity" data-edit-profile>Editează</a></div>
+          <div class="text-base md:text-md text-[#666666] text-right">-</div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
+          <div class="text-base md:text-md font-medium text-[#000000]">Clasa</div>
+          <div class="text-base md:text-md text-[#666666]" data-user-grade>-</div>
+          <div class="text-base md:text-md"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity" data-edit-profile>Editează</a></div>
+          <div class="text-base md:text-md text-[#666666] text-right">-</div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
+          <div class="text-base md:text-md font-medium text-[#000000]">Școală</div>
+          <div class="text-base md:text-md text-[#666666]" data-user-school>-</div>
+          <div class="text-base md:text-md"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity" data-edit-profile>Editează</a></div>
           <div class="text-base md:text-md text-[#666666] text-right">-</div>
         </div>
         

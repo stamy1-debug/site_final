@@ -22,9 +22,20 @@ class ContactFormHandler {
     const email = formData.get('email');
     const message = formData.get('message');
 
-    // Validate
-    if (!name || !email || !message) {
+    // Determine if this is a newsletter form or contact form
+    // Newsletter forms are typically in footer or have "Abonează-te" button
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const isNewsletterForm = submitBtn && submitBtn.textContent.includes('Abonează');
+
+    // Validate based on form type
+    if (!name || !email) {
       alert('Te rugăm să completezi toate câmpurile obligatorii.');
+      return;
+    }
+
+    // For contact forms, message is required
+    if (!isNewsletterForm && !message) {
+      alert('Te rugăm să completezi mesajul.');
       return;
     }
 
@@ -34,28 +45,53 @@ class ContactFormHandler {
 
     try {
       // Disable form
-      const submitBtn = form.querySelector('button[type="submit"]');
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Se trimite...';
       }
 
-      // Save to Supabase
-      const { data, error } = await window.supabaseClient
-        .from('contact_messages')
-        .insert([
-          {
-            name: name.trim(),
-            email: email.trim(),
-            message: message.trim(),
-            page_url: window.location.href,
-            created_at: new Date().toISOString()
-          }
-        ]);
+      // Save to appropriate Supabase table
+      if (isNewsletterForm) {
+        // Save to newsletter_subscribers
+        const { data, error } = await window.supabaseClient
+          .from('newsletter_subscribers')
+          .insert([
+            {
+              name: name.trim(),
+              email: email.trim(),
+              message: message ? message.trim() : null,
+              subscribed_at: new Date().toISOString(),
+              active: true,
+              confirmed: false
+            }
+          ]);
 
-      if (error) {
-        console.error('Supabase error:', error);
-        throw error;
+        if (error) {
+          // Check if email already exists
+          if (error.code === '23505') { // Unique constraint violation
+            throw new Error('Acest email este deja înregistrat pentru newsletter.');
+          }
+          console.error('Supabase error:', error);
+          throw error;
+        }
+      } else {
+        // Save to contact_messages
+        const { data, error } = await window.supabaseClient
+          .from('contact_messages')
+          .insert([
+            {
+              name: name.trim(),
+              email: email.trim(),
+              message: message.trim(),
+              page_url: window.location.href,
+              created_at: new Date().toISOString()
+            }
+          ]);
+
+        if (error) {
+          console.error('Supabase error:', error);
+          throw error;
+        }
       }
 
       // Show success message
@@ -67,12 +103,12 @@ class ContactFormHandler {
         successMessage.style.display = 'block';
       }
 
-      // Reset form after 3 seconds
+      // Reset form after 5 seconds
       setTimeout(() => {
         form.reset();
         if (submitBtn) {
           submitBtn.disabled = false;
-          submitBtn.textContent = 'Trimite';
+          submitBtn.textContent = isNewsletterForm ? 'Abonează-te' : 'Trimite';
         }
         if (formBody) {
           formBody.style.display = 'grid';
@@ -84,13 +120,15 @@ class ContactFormHandler {
 
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('A apărut o eroare la trimiterea mesajului. Te rugăm să încerci din nou sau să ne contactezi direct la email.');
+      
+      // Show appropriate error message
+      const errorMsg = error.message || 'A apărut o eroare la trimiterea mesajului. Te rugăm să încerci din nou sau să ne contactezi direct la email.';
+      alert(errorMsg);
       
       // Re-enable form
-      const submitBtn = form.querySelector('button[type="submit"]');
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Trimite';
+        submitBtn.textContent = isNewsletterForm ? 'Abonează-te' : 'Trimite';
       }
     }
   }

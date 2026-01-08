@@ -40,6 +40,14 @@ ALTER TABLE contact_messages ENABLE ROW LEVEL SECURITY;
 -- Enable Row Level Security (RLS) for newsletter_subscribers
 ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist (to avoid conflicts)
+DROP POLICY IF EXISTS "Anyone can insert contact messages" ON contact_messages;
+DROP POLICY IF EXISTS "Anyone can subscribe to newsletter" ON newsletter_subscribers;
+DROP POLICY IF EXISTS "Authenticated users can read contact messages" ON contact_messages;
+DROP POLICY IF EXISTS "Authenticated users can read newsletter subscribers" ON newsletter_subscribers;
+DROP POLICY IF EXISTS "Authenticated users can update contact messages" ON contact_messages;
+DROP POLICY IF EXISTS "Authenticated users can update newsletter subscribers" ON newsletter_subscribers;
+
 -- Policy: Allow insert for anyone (for contact form submissions)
 CREATE POLICY "Anyone can insert contact messages"
   ON contact_messages

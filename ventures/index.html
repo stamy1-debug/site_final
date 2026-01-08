@@ -13,7 +13,7 @@
 <script src="../assets/js/supabase-config.js"></script>
 <script src="../assets/js/auth.js"></script>
 <script src="../assets/js/protect-route.js"></script>
-<script src="../assets/js/profile-manager.js"></script>
+<script src="../assets/js/profile-account.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(function (registrations) {
@@ -24,7 +24,11 @@
       }
     });
   }
-</script></head><body><div class="wrapper" data-scroll-wrapper="" id="top"><div class="page-holder relative" data-scroller=""><header class="fixed  top-0 left-0 w-full text-white z-3" data-header=""><div class="container flex items-center py-[1.7rem] lg:py-25 header__container"><div class="w-1/5"><a class="header-logo" href="/index.html"><img src="/assets/images/Mate cu succes.png" alt="Mate cu succes" class="w-[9.9rem] h-auto"></a></div><div class="w-1/5 ml-auto flex justify-end lg:hidden relative -top-4"><button data-menu-opener="" type="button"><span></span><span></span></button></div><div class="header-menu"><div class="lightning opacity-20 lg:hidden" style="--power: 130%; --height: 70svh" data-scrub="data-scrub" data-repeat="data-repeat" data-from="130%" data-to="40%"><div class="center-light grid grid-cols-2"><span class="center-light__shadow"></span><div class="h-full lightning__left"></div><div class="h-full lightning__right"></div></div></div><div class="flex-grow flex justify-center pt-[7svh] lg:pt-0"><ul class="nav flex flex-col lg:flex-row gap-x-40 gap-y-[1.8rem] text-[2.4rem] font-secondary lg:font-primary lg:text-base lg:font-medium"><li class="lg:hidden" data-stagger=""><a class="link link--secondary" href="/index.html">Home</a></li><li data-stagger=""><a class="link link--secondary" href="/about/index.html">Despre mine</a></li><li data-stagger=""><a class="link link--secondary is-active" href="/ventures/index.html">Contul meu</a></li><li data-stagger=""><a class="link link--secondary" href="/longevity-intelligence.html">Pregătire EN</a></li><li data-stagger=""><a class="link link--secondary" href="/the-intelligence-report/index.html">Materiale</a></li></ul></div><div class="flex-shrink-0 lg:w-1/4 lg:flex lg:justify-end lg:gap-x-20"><div data-stagger=""><button class="btn btn--primary w-[23rem] mx-auto lg:ml-auto lg:w-[16.8rem]" data-logout>Logout</button></div><div data-stagger=""><a class="btn btn--primary w-[23rem] mx-auto lg:ml-auto lg:w-[16.8rem]" href="/contact/index.html">Contact</a></div><div class="mt-[8svh] lg:hidden flex justify-center" data-stagger=""></div></div></div></div></header><div class="flex flex-col min-h-screen" data-transitions-container="" data-animation="fade"><main class="main">
+</script><!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/contact-form-supabase.js"></script>
+</head><body><div class="wrapper" data-scroll-wrapper="" id="top"><div class="page-holder relative" data-scroller=""><header class="fixed  top-0 left-0 w-full text-white z-3" data-header=""><div class="container flex items-center py-[1.7rem] lg:py-25 header__container"><div class="w-1/5"><a class="header-logo" href="/index.html"><img src="/assets/images/Mate cu succes.png" alt="Mate cu succes" class="w-[9.9rem] h-auto"></a></div><div class="w-1/5 ml-auto flex justify-end lg:hidden relative -top-4"><button data-menu-opener="" type="button"><span></span><span></span></button></div><div class="header-menu"><div class="lightning opacity-20 lg:hidden" style="--power: 130%; --height: 70svh" data-scrub="data-scrub" data-repeat="data-repeat" data-from="130%" data-to="40%"><div class="center-light grid grid-cols-2"><span class="center-light__shadow"></span><div class="h-full lightning__left"></div><div class="h-full lightning__right"></div></div></div><div class="flex-grow flex justify-center pt-[7svh] lg:pt-0"><ul class="nav flex flex-col lg:flex-row gap-x-40 gap-y-[1.8rem] text-[2.4rem] font-secondary lg:font-primary lg:text-base lg:font-medium"><li class="lg:hidden" data-stagger=""><a class="link link--secondary" href="/index.html">Home</a></li><li data-stagger=""><a class="link link--secondary" href="/about/index.html">Despre mine</a></li><li data-stagger=""><a class="link link--secondary is-active" href="/ventures/index.html">Contul meu</a></li><li data-stagger=""><a class="link link--secondary" href="/longevity-intelligence.html">Pregătire EN</a></li><li data-stagger=""><a class="link link--secondary" href="/the-intelligence-report/index.html">Materiale</a></li></ul></div><div class="flex-shrink-0 lg:w-1/4 lg:flex lg:justify-end lg:gap-x-20"><div data-stagger=""><button class="btn btn--primary w-[23rem] mx-auto lg:ml-auto lg:w-[16.8rem]" data-logout>Logout</button></div><div data-stagger=""><a class="btn btn--primary w-[23rem] mx-auto lg:ml-auto lg:w-[16.8rem]" href="/contact/index.html">Contact</a></div><div class="mt-[8svh] lg:hidden flex justify-center" data-stagger=""></div></div></div></div></header><div class="flex flex-col min-h-screen" data-transitions-container="" data-animation="fade"><main class="main">
 
 
 <section class="container pb-50 md:pb-100 pt-[12.8rem] md:pt-180">
@@ -44,7 +48,8 @@
             <div class="w-full h-full rounded-full overflow-hidden bg-[#F5F5F5] border-2 border-[#E0E0E0]">
               <img src="../assets/images/default-avatar.svg" alt="Profil" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-[#666666] text-[4rem]\'>IP</div>'" />
             </div>
-            <button class="absolute bottom-0 right-0 w-40 h-40 bg-[#000000] hover:bg-[#333333] text-white rounded-full flex items-center justify-center transition-colors duration-200 shadow-lg">
+            <input type="file" id="avatar-upload" accept="image/*" class="hidden" />
+            <button id="avatar-edit-btn" class="absolute bottom-0 right-0 w-40 h-40 bg-[#000000] hover:bg-[#333333] text-white rounded-full flex items-center justify-center transition-colors duration-200 shadow-lg">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M14.166 2.5a2.5 2.5 0 0 1 3.536 3.536L6.25 17.5H2.5v-3.75L14.166 2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -54,7 +59,7 @@
         <div class="text-center md:text-left flex-grow">
           <h3 class="text-[2rem] md:text-[2.4rem] font-medium mb-8" data-user-name>Ion Popescu</h3>
           <p class="text-[#666666] mb-16" data-member-since>Membru din decembrie 2024</p>
-          <button class="text-[#000000] hover:opacity-70 transition-opacity text-base font-medium border border-[#E0E0E0] px-20 py-8 rounded hover:bg-[#F9F9F9]">Schimbă poza de profil</button>
+          <button id="change-avatar-btn" class="text-[#000000] hover:opacity-70 transition-opacity text-base font-medium border border-[#E0E0E0] px-20 py-8 rounded hover:bg-[#F9F9F9]">Schimbă poza de profil</button>
         </div>
       </div>
       
@@ -107,52 +112,22 @@
     
     <div class="mb-60 md:mb-80">
       <div class="border-b border-[#E0E0E0] pb-16 mb-20">
-        <h2 class="text-[2rem] md:text-[2.4rem] font-medium mb-0">Cursuri în Derulare</h2>
-      </div>
-      <div class="grid gap-y-16">
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
-          <div class="text-base md:text-md font-medium text-[#000000]">Algebră - Clasa a IX-a</div>
-          <div class="text-base md:text-md text-[#666666]">Lecția 12/30</div>
-          <div class="text-base md:text-md"><span class="inline-block px-12 py-4 bg-[#E8F5E9] text-[#2E7D32] rounded text-sm">Activ</span></div>
-          <div class="text-base md:text-md text-[#666666] text-right"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity">Continuă →</a></div>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
-          <div class="text-base md:text-md font-medium text-[#000000]">Geometrie - Clasa a IX-a</div>
-          <div class="text-base md:text-md text-[#666666]">Lecția 8/25</div>
-          <div class="text-base md:text-md"><span class="inline-block px-12 py-4 bg-[#E8F5E9] text-[#2E7D32] rounded text-sm">Activ</span></div>
-          <div class="text-base md:text-md text-[#666666] text-right"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity">Continuă →</a></div>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
-          <div class="text-base md:text-md font-medium text-[#000000]">Pregătire EN - Matematică</div>
-          <div class="text-base md:text-md text-[#666666]">Lecția 5/40</div>
-          <div class="text-base md:text-md"><span class="inline-block px-12 py-4 bg-[#FFF3E0] text-[#E65100] rounded text-sm">În pauză</span></div>
-          <div class="text-base md:text-md text-[#666666] text-right"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity">Reia →</a></div>
-        </div>
-      </div>
-    </div>
-
-    
-    <div class="mb-60 md:mb-80">
-      <div class="border-b border-[#E0E0E0] pb-16 mb-20">
         <h2 class="text-[2rem] md:text-[2.4rem] font-medium mb-0">Abonament & Facturare</h2>
       </div>
       <div class="grid gap-y-16">
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
           <div class="text-base md:text-md font-medium text-[#000000]">Plan Actual</div>
-          <div class="text-base md:text-md text-[#666666]" data-subscription-plan>Premium - Toate Cursurile</div>
-          <div class="text-base md:text-md" data-subscription-status><span class="inline-block px-12 py-4 bg-[#E8F5E9] text-[#2E7D32] rounded text-sm">Activ</span></div>
-          <div class="text-base md:text-md text-[#666666] text-right" data-subscription-price>250 RON/lună</div>
+          <div class="text-base md:text-md text-[#666666]" data-subscription-plan>-</div>
+          <div class="text-base md:text-md" data-subscription-status>-</div>
+          <div class="text-base md:text-md text-[#666666] text-right" data-subscription-price>-</div>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
           <div class="text-base md:text-md font-medium text-[#000000]">Următoarea Plată</div>
-          <div class="text-base md:text-md text-[#666666]" data-next-payment>15 ianuarie 2026</div>
+          <div class="text-base md:text-md text-[#666666]" data-next-payment>-</div>
           <div class="text-base md:text-md"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity">Schimbă plan</a></div>
-          <div class="text-base md:text-md text-[#666666] text-right">Card ****1234</div>
+          <div class="text-base md:text-md text-[#666666] text-right" data-payment-method>-</div>
         </div>
         
       </div>
@@ -171,54 +146,9 @@
     </div>
 
     
-    <div class="mb-60 md:mb-80">
-      <div class="border-b border-[#E0E0E0] pb-16 mb-20">
-        <h2 class="text-[2rem] md:text-[2.4rem] font-medium mb-0">Performanță & Progres</h2>
-      </div>
-      <div class="grid gap-y-16">
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
-          <div class="text-base md:text-md font-medium text-[#000000]">Teste Finalizate</div>
-          <div class="text-base md:text-md text-[#666666]">24 din 30</div>
-          <div class="text-base md:text-md"><span class="inline-block px-12 py-4 bg-[#E3F2FD] text-[#1565C0] rounded text-sm">80% completat</span></div>
-          <div class="text-base md:text-md text-[#666666] text-right"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity">Vezi detalii →</a></div>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
-          <div class="text-base md:text-md font-medium text-[#000000]">Media Notelor</div>
-          <div class="text-base md:text-md text-[#666666]">8.75</div>
-          <div class="text-base md:text-md"><span class="inline-block px-12 py-4 bg-[#E8F5E9] text-[#2E7D32] rounded text-sm">Foarte bine</span></div>
-          <div class="text-base md:text-md text-[#666666] text-right">+0.5 față de luna trecută</div>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
-          <div class="text-base md:text-md font-medium text-[#000000]">Timp de Studiu</div>
-          <div class="text-base md:text-md text-[#666666]">42 ore (luna aceasta)</div>
-          <div class="text-base md:text-md"><span class="inline-block px-12 py-4 bg-[#E3F2FD] text-[#1565C0] rounded text-sm">Obiectiv: 50h</span></div>
-          <div class="text-base md:text-md text-[#666666] text-right">Medie: 2.1h/zi</div>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
-          <div class="text-base md:text-md font-medium text-[#000000]">Puncte Forte</div>
-          <div class="text-base md:text-md text-[#666666]">Ecuații, Funcții</div>
-          <div class="text-base md:text-md"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity">Vezi raport</a></div>
-          <div class="text-base md:text-md text-[#666666] text-right">-</div>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
-          <div class="text-base md:text-md font-medium text-[#000000]">Zone de Îmbunătățit</div>
-          <div class="text-base md:text-md text-[#666666]">Geometrie analitică</div>
-          <div class="text-base md:text-md"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity">Plan de lucru</a></div>
-          <div class="text-base md:text-md text-[#666666] text-right">Prioritate medie</div>
-        </div>
-      </div>
-    </div>
-
-    
     <div class="pt-40 border-t border-[#E0E0E0]">
       <div class="text-center max-w-[60rem] mx-auto">
-        <p class="text-[#666666] mb-20">Dorești să închizi contul? Această acțiune este permanentă și nu poate fi anulată.</p>
-        <button class="text-[#C41530] hover:opacity-70 transition-opacity text-base font-medium">Șterge contul</button>
+        <button id="delete-account-btn" class="text-[#C41530] hover:opacity-70 transition-opacity text-base font-medium px-30 py-12 border border-[#C41530] rounded hover:bg-[#C41530] hover:text-white transition-all duration-200">Șterge contul</button>
       </div>
     </div>
 

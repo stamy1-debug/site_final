@@ -266,11 +266,83 @@ async function loadSubscriptionsAndPayments() {
 }
 
 function displaySubscription(subscription) {
-  // Will implement this after we add the UI section
-  console.log('Active subscription:', subscription);
+  // Mapare plan_type la nume în română
+  const planNames = {
+    'STARTER': 'STARTER - Fundamentele Matematicii',
+    'PRO': 'PRO - Meditație Completă',
+    'ELITE': 'ELITE - Pregătire Intensivă'
+  };
+
+  // Mapare status la badge
+  const statusBadges = {
+    'active': '<span class="inline-block px-12 py-4 bg-[#E8F5E9] text-[#2E7D32] rounded text-sm">Activ</span>',
+    'pending': '<span class="inline-block px-12 py-4 bg-[#FFF3E0] text-[#E65100] rounded text-sm">În așteptare</span>',
+    'expired': '<span class="inline-block px-12 py-4 bg-[#FFEBEE] text-[#C62828] rounded text-sm">Expirat</span>',
+    'cancelled': '<span class="inline-block px-12 py-4 bg-[#F5F5F5] text-[#666666] rounded text-sm">Anulat</span>'
+  };
+
+  // Populează elementele cu data attributes
+  const planElement = document.querySelector('[data-subscription-plan]');
+  const statusElement = document.querySelector('[data-subscription-status]');
+  const priceElement = document.querySelector('[data-subscription-price]');
+  const nextPaymentElement = document.querySelector('[data-next-payment]');
+
+  if (planElement) {
+    planElement.textContent = planNames[subscription.plan_type] || subscription.plan_type;
+  }
+
+  if (statusElement) {
+    statusElement.innerHTML = statusBadges[subscription.status] || subscription.status;
+  }
+
+  if (priceElement) {
+    priceElement.textContent = `${subscription.price} RON/lună`;
+  }
+
+  if (nextPaymentElement && subscription.end_date) {
+    const endDate = new Date(subscription.end_date);
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    nextPaymentElement.textContent = endDate.toLocaleDateString('ro-RO', options);
+  }
 }
 
 function displayPayments(payments) {
-  // Will implement this after we add the UI section
-  console.log('Payments:', payments);
+  const paymentsContainer = document.querySelector('[data-payments-list]');
+  
+  if (!paymentsContainer) return;
+
+  if (payments.length === 0) {
+    paymentsContainer.innerHTML = `
+      <div class="py-40 text-center text-[#666666]">
+        <p class="text-base">Nu există plăți înregistrate încă.</p>
+        <p class="mt-8"><a href="../longevity-intelligence.html" class="text-[#000000] underline hover:opacity-70">Alege un plan pentru a începe</a></p>
+      </div>
+    `;
+    return;
+  }
+
+  // Mapare status la badge
+  const statusBadges = {
+    'completed': '<span class="inline-block px-12 py-4 bg-[#E8F5E9] text-[#2E7D32] rounded text-sm">Finalizat</span>',
+    'pending': '<span class="inline-block px-12 py-4 bg-[#FFF3E0] text-[#E65100] rounded text-sm">În așteptare</span>',
+    'failed': '<span class="inline-block px-12 py-4 bg-[#FFEBEE] text-[#C62828] rounded text-sm">Eșuat</span>',
+    'refunded': '<span class="inline-block px-12 py-4 bg-[#E3F2FD] text-[#1565C0] rounded text-sm">Rambursat</span>'
+  };
+
+  // Generează HTML pentru fiecare plată
+  const paymentsHTML = payments.map(payment => {
+    const paymentDate = payment.payment_date ? new Date(payment.payment_date) : new Date(payment.created_at);
+    const formattedDate = paymentDate.toLocaleDateString('ro-RO', { day: 'numeric', month: 'short', year: 'numeric' });
+    
+    return `
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
+        <div class="text-base md:text-md font-medium text-[#000000]">${formattedDate}</div>
+        <div class="text-base md:text-md text-[#666666]">${payment.amount} ${payment.currency}</div>
+        <div class="text-base md:text-md">${statusBadges[payment.status] || payment.status}</div>
+        <div class="text-base md:text-md text-[#666666] text-right">${payment.payment_method || 'Card'}</div>
+      </div>
+    `;
+  }).join('');
+
+  paymentsContainer.innerHTML = paymentsHTML;
 }

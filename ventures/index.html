@@ -152,30 +152,29 @@
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
           <div class="text-base md:text-md font-medium text-[#000000]">Plan Actual</div>
-          <div class="text-base md:text-md text-[#666666]">Premium - Toate Cursurile</div>
-          <div class="text-base md:text-md"><span class="inline-block px-12 py-4 bg-[#E8F5E9] text-[#2E7D32] rounded text-sm">Activ</span></div>
-          <div class="text-base md:text-md text-[#666666] text-right">250 RON/lună</div>
+          <div class="text-base md:text-md text-[#666666]" data-subscription-plan>Premium - Toate Cursurile</div>
+          <div class="text-base md:text-md" data-subscription-status><span class="inline-block px-12 py-4 bg-[#E8F5E9] text-[#2E7D32] rounded text-sm">Activ</span></div>
+          <div class="text-base md:text-md text-[#666666] text-right" data-subscription-price>250 RON/lună</div>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
           <div class="text-base md:text-md font-medium text-[#000000]">Următoarea Plată</div>
-          <div class="text-base md:text-md text-[#666666]">15 ianuarie 2026</div>
+          <div class="text-base md:text-md text-[#666666]" data-next-payment>15 ianuarie 2026</div>
           <div class="text-base md:text-md"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity">Schimbă plan</a></div>
           <div class="text-base md:text-md text-[#666666] text-right">Card ****1234</div>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
-          <div class="text-base md:text-md font-medium text-[#000000]">Facturi</div>
-          <div class="text-base md:text-md text-[#666666]">Ultima: 15 Dec 2025</div>
-          <div class="text-base md:text-md"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity">Descarcă toate</a></div>
-          <div class="text-base md:text-md text-[#666666] text-right">250 RON</div>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-y-8 md:gap-x-30 py-16 border-b border-[#E0E0E0] hover:bg-[#F9F9F9] transition-colors duration-200">
-          <div class="text-base md:text-md font-medium text-[#000000]">Metoda de Plată</div>
-          <div class="text-base md:text-md text-[#666666]">Visa ****1234</div>
-          <div class="text-base md:text-md"><a href="#" class="text-[#000000] hover:opacity-70 transition-opacity">Actualizează</a></div>
-          <div class="text-base md:text-md text-[#666666] text-right">Expira: 12/2027</div>
+      </div>
+    </div>
+
+    
+    <div class="mb-60 md:mb-80">
+      <div class="border-b border-[#E0E0E0] pb-16 mb-20">
+        <h2 class="text-[2rem] md:text-[2.4rem] font-medium mb-0">Istoric Plăți</h2>
+      </div>
+      <div class="grid gap-y-16" data-payments-list>
+        <div class="py-40 text-center text-[#666666]">
+          <p class="text-base">Se încarcă plățile...</p>
         </div>
       </div>
     </div>

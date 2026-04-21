@@ -4,7 +4,41 @@
     "personal-identity-and-purpose/index.html"
   ];
   const maxRecoveryAttempts = 3;
+  const recoveryReloadKey = "intelligence-report-recovery:" + window.location.pathname;
   let isRendering = false;
+
+  function getRecoveryReloaded() {
+    try {
+      return sessionStorage.getItem(recoveryReloadKey) === "1";
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function setRecoveryReloaded(value) {
+    try {
+      if (value) {
+        sessionStorage.setItem(recoveryReloadKey, "1");
+      } else {
+        sessionStorage.removeItem(recoveryReloadKey);
+      }
+    } catch (error) {
+      // Ignore storage errors (private mode / restricted storage).
+    }
+  }
+
+  function tryRecoveryReload() {
+    if (getRecoveryReloaded()) {
+      return false;
+    }
+
+    setRecoveryReloaded(true);
+
+    const url = new URL(window.location.href);
+    url.searchParams.set("postsRecovery", "1");
+    window.location.replace(url.toString());
+    return true;
+  }
 
   function unique(values) {
     return values.filter(function (value, index) {
@@ -137,6 +171,10 @@
       );
 
       const allCards = pages.flatMap(buildCardsFromPage);
+      if (!allCards.length) {
+        throw new Error("Nu am gasit carduri in paginile sursa.");
+      }
+
       const formuleInSpatiuCard = createFormuleInSpatiuCard();
       grid.innerHTML = "";
       allCards.forEach(function (card) {
@@ -146,6 +184,7 @@
 
       grid.dataset.rendered = "true";
       grid.dataset.recoveryAttempts = "0";
+      setRecoveryReloaded(false);
     } catch (error) {
       console.error(error);
       grid.innerHTML =
@@ -164,6 +203,10 @@
 
     const attempts = Number(grid.dataset.recoveryAttempts || "0");
     if (attempts >= maxRecoveryAttempts) {
+      if (!tryRecoveryReload()) {
+        grid.innerHTML =
+          '<p class="py-24 px-16">Postarile se incarca greu. Te rog reincarca pagina.</p>';
+      }
       return;
     }
 

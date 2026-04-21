@@ -3,6 +3,8 @@
     "social-connection-and-longevity/index.html",
     "personal-identity-and-purpose/index.html"
   ];
+  const maxRecoveryAttempts = 3;
+  let isRendering = false;
 
   function unique(values) {
     return values.filter(function (value, index) {
@@ -121,9 +123,11 @@
   async function renderMergedMathPosts() {
     const grid = document.getElementById("all-lessons-grid");
 
-    if (!grid || grid.dataset.rendered === "true") {
+    if (!grid || grid.dataset.rendered === "true" || isRendering) {
       return;
     }
+
+    isRendering = true;
 
     try {
       const pages = await Promise.all(
@@ -141,24 +145,54 @@
       grid.appendChild(formuleInSpatiuCard);
 
       grid.dataset.rendered = "true";
+      grid.dataset.recoveryAttempts = "0";
     } catch (error) {
       console.error(error);
       grid.innerHTML =
         '<p class="py-24 px-16">Nu am putut incarca postarile de Algebra si Geometrie.</p>';
+    } finally {
+      isRendering = false;
     }
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", renderMergedMathPosts);
-  } else {
+  function recoverIfGridIsEmpty() {
+    const grid = document.getElementById("all-lessons-grid");
+
+    if (!grid || grid.children.length > 0) {
+      return;
+    }
+
+    const attempts = Number(grid.dataset.recoveryAttempts || "0");
+    if (attempts >= maxRecoveryAttempts) {
+      return;
+    }
+
+    grid.dataset.recoveryAttempts = String(attempts + 1);
+    delete grid.dataset.rendered;
     renderMergedMathPosts();
+
+    setTimeout(recoverIfGridIsEmpty, 900);
   }
 
-  document.addEventListener("swup:contentReplaced", function () {
+  function runRenderCycle() {
     const grid = document.getElementById("all-lessons-grid");
     if (grid) {
       delete grid.dataset.rendered;
     }
+
     renderMergedMathPosts();
+    setTimeout(recoverIfGridIsEmpty, 700);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", runRenderCycle);
+  } else {
+    runRenderCycle();
+  }
+
+  window.addEventListener("load", runRenderCycle);
+
+  ["swup:contentReplaced", "swup:content:replace", "swup:page:view"].forEach(function (eventName) {
+    document.addEventListener(eventName, runRenderCycle);
   });
 })();

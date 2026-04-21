@@ -4,6 +4,43 @@
     "personal-identity-and-purpose/index.html"
   ];
 
+  function unique(values) {
+    return values.filter(function (value, index) {
+      return values.indexOf(value) === index;
+    });
+  }
+
+  function resolveCategoryCandidates(path) {
+    const normalizedPath = path.replace(/^\/+/, "");
+    const currentDirectory = window.location.pathname.endsWith("/")
+      ? window.location.pathname
+      : window.location.pathname.replace(/[^/]*$/, "");
+
+    return unique([
+      new URL(normalizedPath, window.location.origin + currentDirectory).toString(),
+      new URL(normalizedPath, window.location.origin + "/the-intelligence-report/").toString()
+    ]);
+  }
+
+  async function fetchCategoryPage(path) {
+    const candidates = resolveCategoryCandidates(path);
+    let lastError = null;
+
+    for (const url of candidates) {
+      try {
+        const response = await fetch(url, { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error("Nu am putut citi pagina: " + url);
+        }
+        return response.text();
+      } catch (error) {
+        lastError = error;
+      }
+    }
+
+    throw lastError || new Error("Nu am putut citi pagina: " + path);
+  }
+
   function normalizeAssetPath(value) {
     if (!value || value.indexOf("../../") !== 0) {
       return value;
@@ -91,12 +128,7 @@
     try {
       const pages = await Promise.all(
         categorySources.map(function (path) {
-          return fetch(path, { cache: "no-store" }).then(function (response) {
-            if (!response.ok) {
-              throw new Error("Nu am putut citi pagina: " + path);
-            }
-            return response.text();
-          });
+          return fetchCategoryPage(path);
         })
       );
 

@@ -1,0 +1,63 @@
+# Auto-generated: short numeric URL rewrites
+# Keep this file in sync with assets/js/short-urls.js
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Do not rewrite real files/directories
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Numeric vanity URLs (/1, /2, ...)
+  RewriteRule ^1/?$ /the-intelligence-report/index.html [L]
+  RewriteRule ^2/?$ /about/index.html [L]
+  RewriteRule ^3/?$ /contact/index.html [L]
+  RewriteRule ^4/?$ /error/index.html [L]
+  RewriteRule ^5/?$ /external.html [L]
+  RewriteRule ^6/?$ /index.html [L]
+  RewriteRule ^7/?$ /login.html [L]
+  RewriteRule ^8/?$ /longevity-intelligence.html [L]
+  RewriteRule ^9/?$ /longevity-intelligence/index.html [L]
+  RewriteRule ^10/?$ /the-intelligence-report/a-letter-from-Jasmina-on-leading-innovation-and-shaping-the-future/index.html [L]
+  RewriteRule ^11/?$ /the-intelligence-report/ai-and-identity-shaping-our-future-experiences/index.html [L]
+  RewriteRule ^12/?$ /the-intelligence-report/AI-and-tech-in-human-potential/index.html [L]
+  RewriteRule ^13/?$ /the-intelligence-report/ai-longevity-and-equity-building-a-fair-future-for-all/index.html [L]
+  RewriteRule ^14/?$ /the-intelligence-report/are-we-ready-to-expand-on-what-it-means-to-be-human-a-new-definition-of-humanity/index.html [L]
+  RewriteRule ^15/?$ /the-intelligence-report/art-play-and-leisure/index.html [L]
+  RewriteRule ^16/?$ /the-intelligence-report/body-wellness-and-health/index.html [L]
+  RewriteRule ^17/?$ /the-intelligence-report/career-and-skills-for-longevity/index.html [L]
+  RewriteRule ^18/?$ /the-intelligence-report/discovering-a-igai-blending-technology-and-wellbeing-for-purposeful-living/index.html [L]
+  RewriteRule ^19/?$ /the-intelligence-report/economics-of-longevity/index.html [L]
+  RewriteRule ^20/?$ /the-intelligence-report/enhancing-human-connection-through-ai/index.html [L]
+  RewriteRule ^21/?$ /the-intelligence-report/finding-balance-in-ai-extremes-how-to-navigate-the-tech-tension/index.html [L]
+  RewriteRule ^22/?$ /the-intelligence-report/Flux-Fire-the-Future-Why-I-Work-on-Longevity-Intelligence/index.html [L]
+  RewriteRule ^23/?$ /the-intelligence-report/From-Surveillance-to-Sovereignty/index.html [L]
+  RewriteRule ^24/?$ /the-intelligence-report/future-fitness-top-health-and-exercise-trends-for-2024/index.html [L]
+  RewriteRule ^25/?$ /the-intelligence-report/how-empathy-and-innovation-fuel-human-potential-a-vision-for-the-future/index.html [L]
+  RewriteRule ^26/?$ /the-intelligence-report/Is-Technology-Our-Greatest-Ally-or-a-Frenemy-to-Human-Longevity/index.html [L]
+  RewriteRule ^27/?$ /the-intelligence-report/Living-Forward-by-Design-Human-Directed-Evolution-and-the-Rise-of-Longevity-Intelligence/index.html [L]
+  RewriteRule ^28/?$ /the-intelligence-report/Living-to-120-The-Ethics-Aesthetics-and-Joys-of-an-Extended-Existence/index.html [L]
+  RewriteRule ^29/?$ /the-intelligence-report/Longevity-and-Purpose-Finding-Meaning-in-Extended-Lives/index.html [L]
+  RewriteRule ^30/?$ /the-intelligence-report/mental-and-cognitive-health/index.html [L]
+  RewriteRule ^31/?$ /the-intelligence-report/Mental-Models-for-Longevity-Intelligence-The-Munger-Way/index.html [L]
+  RewriteRule ^32/?$ /the-intelligence-report/Mental-Models-The-Thinking-Toolkit-for-Longevity-Intelligence/index.html [L]
+  RewriteRule ^33/?$ /the-intelligence-report/Outliving-What-Matters-The-Challenge-and-Opportunity-of-the-Longevity-Economy/index.html [L]
+  RewriteRule ^34/?$ /the-intelligence-report/personal-identity-and-purpose/index.html [L]
+  RewriteRule ^35/?$ /the-intelligence-report/Poetical-Science-in-the-Age-of-Longevity/index.html [L]
+  RewriteRule ^36/?$ /the-intelligence-report/public-health-and-policy/index.html [L]
+  RewriteRule ^37/?$ /the-intelligence-report/Second-Order-Thinking-The-Competitive-Advantage-in-Health-Wealth-and-Longevity/index.html [L]
+  RewriteRule ^38/?$ /the-intelligence-report/social-connection-and-longevity/index.html [L]
+  RewriteRule ^39/?$ /the-intelligence-report/The-Aesthetics-of-Aging-When-100-is-the-New-60/index.html [L]
+  RewriteRule ^40/?$ /the-intelligence-report/The-Computer-Science-Crash-and-the-Rise-of-Longevity-Intelligence/index.html [L]
+  RewriteRule ^41/?$ /the-intelligence-report/The-End-of-History-Illusion/index.html [L]
+  RewriteRule ^42/?$ /the-intelligence-report/The-Endless-Party-How-Much-Joy-Are-We-Willing-to-Endure/index.html [L]
+  RewriteRule ^43/?$ /the-intelligence-report/The-Future-Is-Female-and-So-Is-The-Longevity-Economy/index.html [L]
+  RewriteRule ^44/?$ /the-intelligence-report/The-Power-of-Less-What-Ive-Learned-About-Balance-in-Training/index.html [L]
+  RewriteRule ^45/?$ /the-intelligence-report/The-Power-of-Tiny-Wins-How-Small-Habits-Build-a-Long-Life/index.html [L]
+  RewriteRule ^46/?$ /the-intelligence-report/the-psychological-impact-of-an-endless-future-life-without-struggle-and-the-hidden-cost-of-immortality/index.html [L]
+  RewriteRule ^47/?$ /the-intelligence-report/values-and-ethics/index.html [L]
+  RewriteRule ^48/?$ /the-intelligence-report/Why-Curiosity-and-Critical-Thinking-Are-Your-Longevity-Superpowers/index.html [L]
+  RewriteRule ^49/?$ /ventures/index.html [L]
+</IfModule>

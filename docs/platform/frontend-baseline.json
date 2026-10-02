@@ -1,0 +1,7 @@
+{
+  "dist/app.js": "426178020350276f6d0568f81f93192f8fa03e53e70be554df6ab5d7dc77e658",
+  "dist/index.html": "8cd61b37244492c82e78001434e9d798da99f74c24db2ff4bcb091d9ee0a1935",
+  "dist/style.css": "4c852c1094662545899d2a4bc3de2fa780e6f1ae72b7f7ad60f006f8e6066917",
+  "dist/vendor/three.core.js": "eb077d2417f61d3e6d9264c317cabc4ea35769ed6b0ab533067292a550784c20",
+  "dist/vendor/three.module.js": "c8211c69345d2e9949dc7a8ac969380497aa0600a5a8ac6a459c8cd02dd9cb8a"
+}

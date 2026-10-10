@@ -1,5 +1,9 @@
 # Privacy implementation and operations
 
+## Stare curentă — 10 octombrie 2026
+
+Pagina de preferințe este disponibilă la `/confidentialitate`; versiunea `local-test-v1` este configurată local. Proprietarul a verificat fluxul de acord/retragere în browser, iar evenimentele PostHog cu acord sunt vizibile. Istoricul deja colectat în PostHog nu se șterge automat la retragere; aplicația oprește colectarea viitoare și resetează identitatea locală. Informarea juridică completă, identitatea operatorului, contactul și termenele de păstrare încă trebuie aprobate înainte de lansare.
+
 This document describes engineering behavior, not a legal compliance certification. No jurisdiction-specific retention period is invented. Before launch the owner must approve the privacy notice, terms, processor agreements, data regions, retention schedule and policy version.
 
 Necessary authentication uses Supabase-managed sessions. Analytics and browser Sentry default to off; marketing is independent and required for newsletter subscription. Newsletter consent write and subscription write lock the same profile row, preventing a concurrent withdrawal from leaving an active subscription. Withdrawal unsubscribes. Newsletter campaign sending is not implemented.
@@ -22,9 +26,9 @@ An authorized operator must:
 
 No destructive provider operation has been performed. Establish an operator, access controls and a tested retention/deletion schedule before launch. Audit logs and webhook ledgers currently have no automatic purge job; review age/volume and implement the approved policy rather than accumulating indefinitely.
 
-## UI REQUIRED
+## UI REQUIRED — notă istorică
 
-The frozen frontend has no login/signup/Google/reset/verification views, account/profile/export/deletion controls, pricing/checkout/portal selection, cookie preferences, newsletter/lead forms or referral management. The APIs/facade are available, but these flows are not usable end-to-end by ordinary visitors. No new visible UI was invented. Approval for these exact components and product pricing/feature rules is required by PRD sections 9–13 and 113.
+Acea constatare a fost depășită de aprobarea și livrarea paginilor; `/confidentialitate`, Auth, cont, programe și celelalte fluxuri enumerate sunt acum implementate. Vezi [pages-delivery.md](pages-delivery.md). Pagina de consimțământ nu înlocuiește politica juridică aprobată.
 
 ## Local completion update — 1 October 2026
 

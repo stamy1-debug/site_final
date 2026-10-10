@@ -1,5 +1,5 @@
 import {persistAuthenticatedConsent,reconcileConsent,reportConsentedLogin} from './consent.js';
-import {AnalyticsController,attribution} from './analytics-core.js';
+import {AnalyticsController,attribution,recordConsentedPage} from './analytics-core.js';
 import {sanitizeProperties,scrubEvent} from '../shared/privacy.js';
 import type {SupabaseClient} from '@supabase/supabase-js';
 import type {EventName} from '../shared/events.js';
@@ -71,7 +71,7 @@ const platform={
 };
 declare global{interface Window{matePlatform:typeof platform;}}
 window.matePlatform=platform;
-async function recordPage(){const data=attribution(location.href,document.referrer);try{const previous=JSON.parse(localStorage.getItem('mate-attribution')??'null');localStorage.setItem('mate-attribution',JSON.stringify({first:previous?.first??data,last:data}));}catch{/* memory-only */}await analytics.track('page_view',{path:location.pathname,...data},'page:'+location.pathname);}
+async function recordPage(){const data=attribution(location.href,document.referrer);try{const previous=JSON.parse(localStorage.getItem('mate-attribution')??'null');localStorage.setItem('mate-attribution',JSON.stringify({first:previous?.first??data,last:data}));}catch{/* memory-only */}await recordConsentedPage(analytics,location.pathname,data);}
 
 const ctaIds=new Map<Element,string>();document.querySelectorAll('a.button,a.nav-cta').forEach((el,i)=>ctaIds.set(el,`existing-cta-${i+1}`));
 document.addEventListener('click',event=>{const anchor=(event.target as Element)?.closest?.('a');const id=anchor&&ctaIds.get(anchor);if(id)void analytics.track('cta_clicked',{cta_id:id,path:location.pathname},crypto.randomUUID());},{passive:true});

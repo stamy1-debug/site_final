@@ -12,7 +12,7 @@ Private Storage bucket is `private-resources`; ownership is first path segment e
 
 ## Migrations and rollback
 
-Apply to a dedicated test project first. Migration is transactional. Verify schema, grants, RLS and Auth trigger before production. No migration has been applied remotely. Initial migration fails on conflicting existing object names rather than replacing unknown data. Once applied, do not edit history; write a forward migration. For rollback, revert app deployment, disable newly exposed writes, and apply a reviewed non-destructive forward correction. Do not drop tables or auth identities to roll back infrastructure.
+The six application migrations have been applied to the configured Supabase project, and the application tables were confirmed there. This is the configured development/test project, not a separately accepted production environment. Before any production use, review the migration diff against that exact project and verify grants, RLS and the Auth trigger. Initial migration fails on conflicting existing object names rather than replacing unknown data. Do not edit applied history; write a forward migration. For rollback, revert app deployment, disable newly exposed writes, and apply a reviewed non-destructive forward correction. Do not drop tables or auth identities to roll back infrastructure.
 
 ## Tests and limits
 

@@ -1,5 +1,9 @@
 # Billing lifecycle
 
+## Acceptanță curentă — 10 octombrie 2026
+
+Proprietarul a completat un checkout Stripe sandbox cu card de test; plata și abonamentul STARTER activ au fost confirmate. Asta verifică traseul reușit de bază. Nu s-au validat încă end-to-end plata eșuată, anularea, refund-ul sau redelivery-ul webhookului. Nu s-au procesat bani reali, iar Stripe live rămâne dezactivat.
+
 Stripe owns card entry, recurring billing, invoices and the Customer Portal. The API accepts a database price UUID, checks the active plan/price server-side and binds the verified Supabase identity to one Stripe customer. No monthly/yearly amounts or paid feature mappings have been invented.
 
 Checkout holds a per-user database lease and durably reserves a request generation before contacting Stripe. Retries reuse that idempotency key, including when Stripe succeeded but database response persistence failed. Existing open sessions are reused; an incompatible price or existing subscription requires the Portal. Uncertain requests beyond the provider idempotency window require manual reconciliation, not a new charge attempt.
@@ -18,7 +22,7 @@ Access comes from current database state: active/trial subscriptions, unexpired 
 
 ## Sandbox acceptance still required
 
-Real Stripe test-mode monthly/yearly checkout, portal changes, asynchronous payment, failed renewal, cancellation, refund and redelivery must be exercised with the configured webhook API version. Unit tests use the SDK and synthetic signed payloads; they do not prove a configured Stripe account works.
+Exercise failed payment, cancellation, refund and redelivery with the configured webhook API version. Checkout success has been confirmed once; portal configuration exists but a plan change/cancellation still needs runtime acceptance. The catalog currently uses monthly approved amounts only; no yearly prices were supplied. Unit tests use the SDK and synthetic signed payloads; they do not prove every provider event works.
 
 Coupon tables exist but coupons and redemption orchestration are not enabled. Configure business rules and trusted Stripe promotion mappings before activating them. Referral reward fulfillment is likewise pending business rules.
 

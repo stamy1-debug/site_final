@@ -10,7 +10,7 @@ Destination: the environment-specific PostHog project. Default: denied. Browser 
 | signup_completed | Supabase accepts signup and returns user; not proof of email verification | none |
 | login_completed | Auth session SIGNED_IN; deduplicated per sign-in | none |
 | logout_completed | Successful facade signout | none |
-| pricing_viewed | Taxonomy/facade ready; UI REQUIRED | plan_code if supplied |
+| pricing_viewed | Programs page, after consent synchronization and SDK readiness; verified in PostHog | path |
 | checkout_started | API returns Stripe Checkout URL | price_id |
 | checkout_completed | Verified completed session and active/trial snapshot; server outbox | none |
 | subscription_started | Applied transition into active/trial; server outbox | none |
@@ -24,6 +24,9 @@ Browser event IDs deduplicate within the controller lifetime. Server conversions
 
 Only allowlisted scalar properties pass; email/token-like values are dropped. Do not place names or sensitive free text in campaign values. Provider managed privacy settings must also be reviewed. First/last attribution is stored locally only with analytics consent; leads accept sanitized attribution. Feature flag reads are consent-gated and do not emit exposure events.
 
-## Dashboard setup pending provider access
+## Local validation dashboard — 2026-10-10
 
-Create visitor → CTA → signup accepted → login → pricing → checkout → subscription funnels. Treat login as a proxy, not an implemented educational activation milestone. Compare source/medium/campaign and environment; construct weekly signup cohorts and return-page retention after real events arrive. Validate deduplication and payment conversion order in the test project before trusting conversion rates. No dashboard, cohort or experiment has been created remotely.
+Create visitor → CTA → signup accepted → login → pricing → checkout → subscription funnels. Treat login as a proxy, not an implemented educational activation milestone. Compare source/medium/campaign and environment; construct weekly signup cohorts and return-page retention after real events arrive. Validate deduplication and payment conversion order in the test project before trusting conversion rates. A local-validation dashboard exists: https://eu.posthog.com/project/292558/dashboard/995584. It contains page_view total counts, pricing_viewed total counts and a sequential unique-user page_view → pricing_viewed funnel with a one-day conversion window. All three use the last seven days. These are consented local test events, not production performance. No cohorts or experiments have been created. Checkout/subscription delivery and their full conversion funnel remain pending validation.
+### Pricing event regression
+
+The programs UI previously attempted capture before asynchronous consent synchronization finished. Page and pricing capture now run together inside recordPage after tracking readiness. Two regression tests cover consent denial, deduplication, withdrawal and non-program pages. `npm run verify` passed 111 tests in 21 files on 2026-10-10; PostHog subsequently showed `pricing_viewed` events from browser testing.

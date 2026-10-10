@@ -1,8 +1,12 @@
 # Operations and launch gate
 
+## Stare la 10 octombrie 2026
+
+Supabase, Stripe sandbox, Resend test și PostHog au proiecte conectate. A fost verificată înregistrarea Supabase, o plată Stripe de test, livrarea unui singur email de test autorizat și evenimentele PostHog cu consimțământ. Acestea nu reprezintă acceptanță completă sau producție. Emailul automat, Sentry și schedulerul sunt inactive; Vercel/deploymentul sunt amânate. Pentru statusul detaliat și testele lipsă, vezi [delivery.md](delivery.md).
+
 ## Managed services
 
-No provider project, domain, paid plan, live charge or real email was created in this infrastructure task. Configure test environments first using setup.md, then record evidence for every provider acceptance check in delivery.md.
+Nu au fost activate plăți live, un domeniu sau plan plătit. Conturile test deja conectate nu înlocuiesc configurarea separată de producție. Notează dovezi pentru fiecare acceptanță în delivery.md.
 
 | Provider | Free-tier consideration / required action |
 |---|---|

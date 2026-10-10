@@ -39,7 +39,6 @@ bindForm('#auth-form',async(form,status)=>{
 $('#google-signin')?.addEventListener('click',e=>{rememberNext();void busy(e.currentTarget as HTMLButtonElement,()=>platform.auth.google().then(()=>{}),$('#form-status'));});
 if(document.body.dataset.page==='callback'){void(async()=>{try{await authReady;const session=await platform.auth.session();if(!session.data.session)throw new Error('auth_link_invalid');await platform.syncConsent();location.replace(new URL(location.href).searchParams.get('auth')==='recovery'?'/parola-noua':returnNext());}catch(e){message($('#form-status'),friendly(e),true);$('.u-progress')?.setAttribute('hidden','');}})();}
 if(document.body.dataset.page==='programs'){
- void platform.track('pricing_viewed',{path:'/programe'},'pricing:'+location.pathname);
  document.querySelectorAll<HTMLButtonElement>('[data-program]').forEach(button=>button.addEventListener('click',()=>{const program=programs.find(p=>p.code===button.dataset.program)!;const status=$(`[data-plan-status="${program.code}"]`);void busy(button,async()=>{
   if(!platform.configuration.auth){message(status,'Înscrierile online se activează în curând. Prețul și beneficiile programului sunt afișate mai sus.',true);return;}
   const session=await platform.auth.session();if(!session.data.session){location.assign('/autentificare?next='+encodeURIComponent('/programe?program='+program.code));return;}

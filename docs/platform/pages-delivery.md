@@ -1,5 +1,7 @@
 # Pagini de platformă — implementare locală
 
+Stare actuală: toate paginile enumerate au fost construite. Auth cu Supabase și Checkout STARTER cu Stripe sandbox au fost folosite de proprietar; nu se mai aplică nota istorică de mai jos conform căreia cheile fuseseră amânate.
+
 Utilizatorul a aprobat explicit interfețele lipsă, a confirmat domeniul final matecusucces.com și a cerut implementarea înainte de chei/deploy. Această actualizare înlocuiește blocajul UI din raportul inițial pentru fluxurile enumerate mai jos.
 
 ## Pagini disponibile
@@ -18,14 +20,14 @@ Navigarea generată a paginii principale are două linkuri noi, Programe și Con
 
 HTML generat în build din `src/ui/pages.ts`, stiluri proprii în `src/ui/ui.css`, controller în `src/browser/ui.ts`; nicio migrare de framework. API-ul newsletter are acum GET autentificat pentru starea salvată. Checkbox-ul rămâne dezactivat până la încărcarea stării și dezabonarea este disponibilă separat.
 
-Migrarea `202609300001_program_catalog.sql` adaugă cele patru programe în catalog, fără Stripe price IDs fictive. Configurarea Stripe trebuie să creeze prețuri lunare RON cu sumele 35000, 53000, 58400 și 15200 în unități minore, apoi să le asocieze planurilor corecte. UI acceptă numai un preț activ returnat de API care corespunde exact codului, monedei, intervalului și sumei. Matricea de acces digital trebuie încă configurată în backend; ședințele și mentoratul sunt beneficii ale serviciului, nu funcționalități software inventate.
+Migrarea `202609300001_program_catalog.sql` adaugă cele patru programe în catalog. Prețurile lunare RON aprobate au fost configurate în Stripe sandbox și asociate planurilor; checkout-ul STARTER reușit confirmă că ruta principală folosește un preț valid. UI acceptă numai un preț activ returnat de API care corespunde exact codului, monedei, intervalului și sumei. Matricea de acces digital și verificarea drepturilor după plată trebuie încă acceptate end-to-end; ședințele și mentoratul sunt beneficii ale serviciului, nu funcționalități software inventate.
 
-La conectarea Supabase, configurează redirecturile exacte `/auth/callback` și `/auth/callback?auth=recovery` pentru fiecare mediu. Stripe Checkout revine în `/cont?checkout=complete`, anularea în `/programe?checkout=cancelled`, iar Portalul în `/cont`. Redirectul nu confirmă o plată: UI așteaptă datele backendului.
+În proiectul Supabase local au fost setate redirecturile exacte `/auth/callback` și `/auth/callback?auth=recovery`; pentru orice nou mediu trebuie configurate URL-urile sale. Stripe Checkout revine în `/cont?checkout=complete`, anularea în `/programe?checkout=cancelled`, iar Portalul în `/cont`. Redirectul nu confirmă o plată: UI așteaptă datele backendului.
 
 ## Verificare și limite
 
-Build, lint, TypeScript și suite locală: 78 teste. Revizie independentă fără defecte blocante; afișarea stării newsletter după reload a fost corectată, cu test de regresie pentru ruta de citire. Verificare browser desktop și 390 px: programe, auth, navigare mobilă fără overflow, eroare onestă când auth/billing nu sunt configurate, checkbox-uri de consimțământ oprite, stare neautentificată a contului. Capturi în screenshots/.
+Istoric: 78 teste la livrarea inițială a paginilor; la 10 octombrie 2026 verificarea completă Node 22 a trecut cu 111 teste în 21 fișiere, lint, TypeScript și build. Revizia independentă fără defecte blocante și verificarea browser desktop/390 px sunt păstrate ca dovezi pentru UI. Testarea UI cu furnizorii conectați este parțială; vezi [delivery.md](delivery.md).
 
-Contul autentificat este conectat la API real, dar nu a fost validat end-to-end cu date remote deoarece cheile au fost amânate explicit. Nu există cont demo sau progres fictiv. Google, emailurile de confirmare/reset, plățile și datele reale vor fi testate după configurare.
+Contul autentificat a fost creat și folosit cu Supabase. Google OAuth rămâne neconfigurat. Checkout-ul sandbox reușit și confirmarea prin email au fost testate; acceptanța pentru scenariile de plată eșuată/anulare/refund și pentru emailurile Resend automate rămâne deschisă. Nu există cont demo sau progres fictiv.
 
 Informarea juridică completă, identitatea operatorului și termenele de păstrare nu sunt inventate. Pagina de preferințe nu ține loc de termeni sau politică juridică aprobată. Formularul public de contact/lead și conținutul educațional propriu-zis nu sunt incluse în aceste pagini de cont. Newsletter campaigns, recompensele referral, erasure complet, worker programat, monitorizarea remote și deployment rămân în lista de infrastructură.

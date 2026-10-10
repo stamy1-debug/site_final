@@ -2,7 +2,7 @@
 
 Site de matematică în română, cu Three.js local și infrastructură pentru Vercel, Supabase, Stripe, Resend, PostHog și Sentry.
 
-Frontendul aprobat din `dist/` este păstrat. Build-ul separat adaugă metadate SEO, integrarea serviciilor și linkuri către paginile noi de programe și cont. Serviciile externe nu sunt încă activate.
+Frontendul aprobat din `dist/` este păstrat. Build-ul separat adaugă metadate SEO, integrarea serviciilor și linkuri către paginile noi de programe și cont. Supabase, Stripe sandbox, Resend test și PostHog sunt configurate și verificate parțial; emailul automat, Sentry și deploymentul rămân dezactivate. Vezi [raportul de livrare](docs/platform/delivery.md) pentru limite și pași rămași.
 
 ## Pornire
 
@@ -14,7 +14,7 @@ Configurația este explicată în [setup](docs/platform/setup.md); nu introduce 
 
 ## Documentație
 
-- [Stare curentă: livrare locală](docs/platform/local-completion.md)
+- [Stare curentă: livrare și dependențe](docs/platform/delivery.md)
 - [Acoperirea PRD-ului](docs/platform/prd-coverage.md)
 
 - [Pagini noi: rute, integrare și verificări](docs/platform/pages-delivery.md)

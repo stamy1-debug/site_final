@@ -1,6 +1,8 @@
 # Livrare locală — 1 octombrie 2026
 
-Implementarea infrastructurii din PRD este pregătită local, în domeniul cerut: fără chei, conectări la conturi externe, plăți, emailuri reale sau deployment. Verificarea serviciilor reale este o etapă separată și nu este declarată completă.
+> Raport istoric. După această dată au fost conectate Supabase, Stripe sandbox, Resend test și PostHog. Pentru statusul actual, verificarea pe Node 22 și pașii încă necesari, consultă [raportul de livrare din 10 octombrie](delivery.md) și [acoperirea PRD](prd-coverage.md).
+
+La acea dată, implementarea era pregătită local fără chei, conectări la conturi externe, plăți, emailuri reale sau deployment. Verificarea serviciilor reale era o etapă separată și nu era declarată completă.
 
 ## Completări față de livrarea paginilor
 

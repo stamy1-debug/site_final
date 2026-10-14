@@ -29,7 +29,7 @@ async function client(){
  c.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_IN'&&session){pendingLogin={userId:session.user.id,eventId:`login:${session.user.id}:${session.user.last_sign_in_at}`};}if(event==='SIGNED_OUT'){pendingLogin=undefined;posthog?.reset();}window.dispatchEvent(new CustomEvent('mate:auth',{detail:{event,authenticated:!!session}}));});return c;});
  return clientPromise;
 }
-async function api(path:string,method='GET',data?:unknown){const c=await client();const {data:session}=await c.auth.getSession();if(!session.session)throw new Error('Authentication required');const result=await fetch('/api/v1/'+path,{method,headers:{Authorization:'Bearer '+session.session.access_token,'Content-Type':'application/json'},body:data===undefined?undefined:JSON.stringify(data),credentials:'omit'});const output=await result.json();if(!result.ok)throw new Error(output.error?.code??'Request failed');return output;}
+async function api(path:string,method='GET',data?:unknown){const c=await client();const {data:session}=await c.auth.getSession();if(!session.session)throw new Error('Authentication required');const result=await fetch('/api/v1/'+path,{method,headers:{Authorization:'Bearer '+session.session.access_token,'Content-Type':'application/json'},body:data===undefined?undefined:JSON.stringify(data),credentials:'same-origin'});const output=await result.json();if(!result.ok)throw new Error(output.error?.code??'Request failed');return output;}
 async function syncConsent(){
  if(!config.policyVersion)return false;
  try{

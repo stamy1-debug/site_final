@@ -2,9 +2,9 @@
 
 ## Stare curentă — 10 octombrie 2026
 
-Pagina de preferințe este disponibilă la `/confidentialitate`; versiunea `local-test-v1` este configurată local. Proprietarul a verificat fluxul de acord/retragere în browser, iar evenimentele PostHog cu acord sunt vizibile. Istoricul deja colectat în PostHog nu se șterge automat la retragere; aplicația oprește colectarea viitoare și resetează identitatea locală. Informarea juridică completă, identitatea operatorului, contactul și termenele de păstrare încă trebuie aprobate înainte de lansare.
+Pagina de preferințe este disponibilă la `/confidentialitate`; versiunea `local-test-v1` este configurată local. Proprietarul a verificat fluxul de acord/retragere în browser, iar evenimentele PostHog cu acord sunt vizibile. Istoricul deja colectat în PostHog nu se șterge automat la retragere; aplicația oprește colectarea viitoare și resetează identitatea locală. Datele SS TEAM S.R.L. și adresa de contact au fost furnizate de proprietar; perioadele de păstrare și informarea juridică completă încă trebuie aprobate înainte de lansare.
 
-This document describes engineering behavior, not a legal compliance certification. No jurisdiction-specific retention period is invented. Before launch the owner must approve the privacy notice, terms, processor agreements, data regions, retention schedule and policy version.
+This document describes engineering behavior, not a legal compliance certification. No jurisdiction-specific retention period is invented. Before launch the owner must approve the privacy notice, terms, processor agreements, data regions, retention schedule and policy version. Operator details supplied: SS TEAM S.R.L., CUI 52720209, Reg. Com. J2025079707003, Romania, Bascov, Argeș, SAT GLAMBOCU COM. BASCOV, STR. GLAMBOC DN, NR. 39; contact stamalaurentiu0@gmail.com. Capital social was not provided and is omitted.
 
 Necessary authentication uses Supabase-managed sessions. Analytics and browser Sentry default to off; marketing is independent and required for newsletter subscription. Newsletter consent write and subscription write lock the same profile row, preventing a concurrent withdrawal from leaving an active subscription. Withdrawal unsubscribes. Newsletter campaign sending is not implemented.
 

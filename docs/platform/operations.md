@@ -1,8 +1,8 @@
 # Operations and launch gate
 
-## Stare la 10 octombrie 2026
+## Stare la 14 octombrie 2026
 
-Supabase, Stripe sandbox, Resend test și PostHog au proiecte conectate. A fost verificată înregistrarea Supabase, o plată Stripe de test, livrarea unui singur email de test autorizat și evenimentele PostHog cu consimțământ. Acestea nu reprezintă acceptanță completă sau producție. Emailul automat, Sentry și schedulerul sunt inactive; Vercel/deploymentul sunt amânate. Pentru statusul detaliat și testele lipsă, vezi [delivery.md](delivery.md).
+Supabase, Stripe Sandbox, Resend, PostHog și Sentry au fost verificate în mediile lor de test/local. Pe 14 octombrie, un profil temporar cu acord analytics a parcurs checkoutul Starter Stripe Sandbox; webhookul semnat a fost procesat, evenimentele de conversie au ajuns în PostHog EU, iar retragerea consimțământului a oprit cererile. Identitatea temporară a fost ștearsă și abonamentul anulat. Backupul Supabase nu există: proiectul Free nu include backupuri programate. În Sentry, regiunea este EU, originea este permisă pentru `*`, IP scrubbing este activ doar la proiect, iar geografia derivată la nivel de oraș rămâne; trialul Business avea 11 zile rămase și consum 3/1.000.000. Retention nu are o valoare verificabilă în dashboard. Joburile au teste de autorizare trecute, dar `JOB_SECRET` și schedulerul lipsesc. Aceste verificări nu reprezintă acceptanță de producție; deploymentul Vercel este amânat. Pentru dovezi și restul pașilor, vezi [delivery.md](delivery.md).
 
 ## Managed services
 
@@ -11,11 +11,11 @@ Nu au fost activate plăți live, un domeniu sau plan plătit. Conturile test de
 | Provider | Free-tier consideration / required action |
 |---|---|
 | Vercel | Hobby is for personal/non-commercial use. Commercial subscriptions need an eligible plan; approve current pricing before purchase. Hobby cron's daily frequency is unsuitable for prompt outbox processing. |
-| Supabase | Free projects have resource/auth/email limits and may pause after inactivity. Establish offsite backups and a tested restore; do not assume managed free-tier recovery. |
+| Supabase | Dashboard confirms the current Free project has no scheduled backups. Do not assume managed recovery; a backup/restore test needs an eligible backup/export and a separate safe restore target. No upgrade or second project has been created. |
 | Stripe | Test mode precedes live enablement; live payment processing incurs published transaction fees. Account activation and applicable fee review remain owner tasks. |
-| Resend | Verify sender domain/DNS and current daily/monthly limits before enabling sends. Domain ownership and delivery test are pending. |
-| PostHog | Set ingestion/replay limits and billing alerts in the project. Replay remains disabled; confirm current free allowances in the owner dashboard. |
-| Sentry | Set event quotas, alert routing and retention. Tracing is disabled; test a scrubbed error before launch. |
+| Resend | Sending DNS is verified (DKIM and both CNAMEs). Confirm the final sender address and test delivery from it before enabling sends; check current quotas in the owner dashboard. |
+| PostHog | Checkout and subscription conversions were accepted with analytics consent; withdrawal stopped further requests. Replay remains disabled; confirm production ingestion limits and billing controls. |
+| Sentry | EU region; Business trial showed 11 days remaining, 3/1M errors, no additional spend and no payment method. Allowed Domains is `*`; restrict it before launch. Project IP scrubbing is on while the organization-level control is off. City-level derived geography remains visible. Retention was not exposed as a verifiable setting in the dashboard; obtain the actual account retention term before launch. A high-priority issue email rule and Spike Protection are active. |
 
 References: [Vercel Hobby](https://vercel.com/docs/plans/hobby), [Vercel pricing](https://vercel.com/pricing), [Cron limits](https://vercel.com/docs/cron-jobs/usage-and-pricing), [Supabase backups](https://supabase.com/docs/guides/platform/backups). Quotas and prices are provider-controlled; this implementation makes no subscription commitment.
 
@@ -23,17 +23,17 @@ References: [Vercel Hobby](https://vercel.com/docs/plans/hobby), [Vercel pricing
 
 `GET /api/v1/internal/jobs` accepts `Authorization: Bearer <CRON_SECRET>` (or JOB_SECRET fallback) and is compatible with managed scheduler requests. The retained `POST /api/v1/internal/email` uses JOB_SECRET. Both prepare idempotent expiring notices, prune only expired quota/lease state, and process up to ten outbox jobs. The worker suppresses outdated expiry notices before sending.
 
-No cron is configured or running. After an eligible provider plan/cadence is approved, configure Vercel Cron for `/api/v1/internal/jobs` and set CRON_SECRET. Do not add a public unauthenticated scheduler route. A five-minute lease protects claimed work; investigate exhausted attempts and ambiguous old delivery before retries. There is no custom always-on worker.
+No cron is configured or running, and `JOB_SECRET` is absent. `npm test -- tests/jobs.test.ts` passes (2/2), covering exact bearer-secret authorization and rejecting an unauthenticated request before provider access. After hosting and an eligible scheduler cadence are approved, set `CRON_SECRET` (or `JOB_SECRET`) as a hosted secret and schedule `/api/v1/internal/jobs`. Do not add a public unauthenticated scheduler route. A five-minute lease protects claimed work; investigate exhausted attempts and ambiguous old delivery before retries. There is no custom always-on worker.
 
 Alert on pending age, exhausted attempts, last_error, webhook delivery failures, readiness failures and repeated server errors. Stop ingestion-dependent launch if this worker has no approved runner. Do not reset attempts on old emails without checking Resend delivery: requests outside the idempotency safety window deliberately require reconciliation.
 
 ## Monitoring
 
-Health only proves process availability; readiness checks database access. It is not a full test of Stripe/Resend/PostHog/Sentry. Structured server errors contain static codes/request IDs. Sentry scrubs user/request/context/message details; configure release identifiers and environment isolation. No external alert rules or uptime checks are configured yet.
+Health only proves process availability; readiness checks database access. It is not a full test of Stripe/Resend/PostHog/Sentry. Structured server errors contain static codes/request IDs. Sentry scrubs user/request/context/message details; configure release identifiers and environment isolation. A high-priority issue email alert is active. Project-level IP scrubbing is enabled and the recent event had no stored IP/tag, but the organization-level toggle is off and city-level derived geography remains. Restrict the wildcard hostname allowlist and confirm account quota/retention and uptime checks before launch.
 
 ## Backup and rollback
 
-Before first hosted migration: verify the exact target project, take a provider-supported backup/export, review SQL against existing objects, apply to a test project, and test restore separately. The PGlite SQL tests do not replace Supabase restore testing. Roll back frontend/functions through Vercel deployment history. Treat deployed schema rollback as a reviewed forward migration; never drop production data to undo a release.
+Before first hosted migration: verify the exact target project, take a provider-supported backup/export, review SQL against existing objects, apply to a test project, and test restore separately. The current Supabase Free project has no scheduled backup and no backup artifact is available; do not upgrade the project or create a restore project without owner approval. Local restore is also unavailable in this environment (Supabase CLI absent, Docker daemon unavailable, and no database password configured). The PGlite SQL tests do not replace Supabase restore testing. Roll back frontend/functions through Vercel deployment history. Treat deployed schema rollback as a reviewed forward migration; never drop production data to undo a release.
 
 ## Acceptance checklist
 

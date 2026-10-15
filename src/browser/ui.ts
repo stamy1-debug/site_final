@@ -1,6 +1,7 @@
 import {authReady} from './platform.js';
 import {loadConsentChoice} from './consent.js';
 import {programs,matchingPrice,safeNext} from '../shared/programs.js';
+import {signupMetadata} from '../shared/signup.js';
 const platform=window.matePlatform;
 const $=<T extends HTMLElement=HTMLElement>(selector:string)=>document.querySelector<T>(selector);
 const next=safeNext(new URL(location.href).searchParams.get('next'));
@@ -19,25 +20,29 @@ function friendly(error:unknown){const raw=error instanceof Error?error.message:
  'use_customer_portal':'Ai deja un abonament. Gestionează-l din Contul meu, în secțiunea de facturare.',
  'checkout_in_progress':'Ai deja o plată în curs pentru alt program. Finalizează sau închide sesiunea existentă.',
  'marketing_consent_required':'Activează acordul de marketing înainte de abonare.',
- 'service_unavailable':'Serviciul nu este încă disponibil. Încearcă din nou mai târziu.'};
+ 'service_unavailable':'Serviciul nu este încă disponibil. Încearcă din nou mai târziu.',
+ 'parent_consent_required':'Pentru un cont sub 18 ani, confirmă mai întâi că ai acordul părintelui sau tutorelui.',
+ 'parent_email_invalid':'Introdu o adresă validă de email a părintelui sau tutorelui.'};
  return known[raw]??'Nu am putut finaliza acțiunea. Încearcă din nou sau revino mai târziu.';
 }
 async function busy(button:HTMLButtonElement,task:()=>Promise<void>,status:HTMLElement|null){if(button.disabled)return;button.disabled=true;button.setAttribute('aria-busy','true');if(status)status.textContent='Se procesează…';try{await task();}catch(e){message(status,friendly(e),true);}finally{button.disabled=button.dataset.complete==='true';button.removeAttribute('aria-busy');}}
 function rememberNext(){try{sessionStorage.setItem('mate-next',next);}catch{/* storage may be unavailable */}}
 function returnNext(){try{const value=safeNext(sessionStorage.getItem('mate-next'));sessionStorage.removeItem('mate-next');return value;}catch{return '/cont';}}
 function field(form:HTMLFormElement,name:string){return (form.elements.namedItem(name) as HTMLInputElement|HTMLSelectElement).value;}
+function registrationDetails(form:HTMLFormElement,prefix=''){const under18=(form.elements.namedItem(prefix+'under18') as HTMLInputElement).checked;return signupMetadata({under18,parentEmail:under18?field(form,prefix+'parentEmail'):'',parentConsent:under18&&(form.elements.namedItem(prefix+'parentConsent') as HTMLInputElement).checked});}
+document.querySelectorAll<HTMLElement>('.u-minor-fields').forEach(group=>{const under18=group.querySelector<HTMLInputElement>('input[name$="under18"]')!;const parent=group.querySelector<HTMLElement>('.u-parent-fields')!;const parentEmail=parent.querySelector<HTMLInputElement>('input[name$="parentEmail"]')!;const parentConsent=parent.querySelector<HTMLInputElement>('input[name$="parentConsent"]')!;const update=()=>{parent.hidden=!under18.checked;parentEmail.disabled=!under18.checked;parentConsent.disabled=!under18.checked;parentEmail.required=under18.checked;parentConsent.required=under18.checked;};under18.addEventListener('change',update);update();});
 function bindForm(id:string,task:(form:HTMLFormElement,status:HTMLElement|null)=>Promise<void>){const form=$<HTMLFormElement>(id);form?.addEventListener('submit',e=>{e.preventDefault();const status=form.querySelector<HTMLElement>('[role=status]');void busy(form.querySelector<HTMLButtonElement>('button[type=submit]')!,()=>task(form,status),status);});}
 document.querySelectorAll<HTMLButtonElement>('[data-toggle-password]').forEach(button=>button.addEventListener('click',()=>{const input=button.previousElementSibling as HTMLInputElement;const show=input.type==='password';input.type=show?'text':'password';button.textContent=show?'Ascunde':'Arată';button.setAttribute('aria-label',show?'Ascunde parola':'Arată parola');button.setAttribute('aria-pressed',String(show));}));
 document.querySelectorAll<HTMLAnchorElement>('[data-keep-next]').forEach(a=>{a.href+='?next='+encodeURIComponent(next);});
 bindForm('#auth-form',async(form,status)=>{
  const action=form.dataset.action;
  if(action==='login'){await platform.auth.signIn(field(form,'email'),field(form,'password'));await platform.syncConsent();location.assign(next);}
- if(action==='signup'){rememberNext();const result=await platform.auth.signUp(field(form,'email'),field(form,'password'));if(result.session){await platform.syncConsent();location.assign(next);}else{message(status,'Verifică adresa de email pentru a continua. Dacă este necesară confirmarea, vei primi un link de activare.');form.reset();}}
+ if(action==='signup'){rememberNext();const metadata=registrationDetails(form);const result=await platform.auth.signUp(field(form,'email'),field(form,'password'),metadata);if(result.session){await platform.syncConsent();location.assign(next);}else{message(status,'Verifică adresa de email pentru a continua. Dacă este necesară confirmarea, vei primi un link de activare.');form.reset();}}
  if(action==='reset'){await platform.auth.resetPassword(field(form,'email'));message(status,'Dacă adresa este asociată unui cont, vei primi un link de recuperare. Verifică și folderul Spam.');form.reset();}
  if(action==='password'){if(field(form,'password')!==field(form,'confirm')){message(status,'Parolele nu coincid. Verifică ambele câmpuri.',true);return;}await authReady;const session=await platform.auth.session();if(!session.data.session)throw new Error('auth_link_invalid');await platform.auth.changePassword(field(form,'password'));form.reset();message(status,'Parola a fost actualizată. Poți reveni în cont.');const link=document.createElement('a');link.href='/cont';link.className='u-text-link';link.textContent='Mergi în cont →';status?.append(document.createElement('br'),link);}
 });
-$('#google-signin')?.addEventListener('click',e=>{rememberNext();void busy(e.currentTarget as HTMLButtonElement,()=>platform.auth.google().then(()=>{}),$('#form-status'));});
-if(document.body.dataset.page==='callback'){void(async()=>{try{await authReady;const session=await platform.auth.session();if(!session.data.session)throw new Error('auth_link_invalid');await platform.syncConsent();location.replace(new URL(location.href).searchParams.get('auth')==='recovery'?'/parola-noua':returnNext());}catch(e){message($('#form-status'),friendly(e),true);$('.u-progress')?.setAttribute('hidden','');}})();}
+$('#google-signin')?.addEventListener('click',e=>{const button=e.currentTarget as HTMLButtonElement;let metadata:Record<string,unknown>;try{metadata=registrationDetails($('#google-minor-form') as HTMLFormElement,'google');}catch(error){message($('#form-status'),friendly(error),true);return;}rememberNext();try{sessionStorage.setItem('mate-google-registration',JSON.stringify(metadata));}catch{message($('#form-status'),'Nu putem păstra temporar datele de înscriere. Activează stocarea sesiunii și încearcă din nou.',true);return;}void busy(button,()=>platform.auth.google().then(()=>{}),$('#form-status'));});
+if(document.body.dataset.page==='callback'){void(async()=>{try{await authReady;const session=await platform.auth.session();if(!session.data.session)throw new Error('auth_link_invalid');const pending=sessionStorage.getItem('mate-google-registration');if(pending){await platform.auth.updateUserMetadata(JSON.parse(pending));sessionStorage.removeItem('mate-google-registration');}await platform.syncConsent();location.replace(new URL(location.href).searchParams.get('auth')==='recovery'?'/parola-noua':returnNext());}catch(e){try{sessionStorage.removeItem('mate-google-registration');}catch{/* session storage unavailable */}message($('#form-status'),friendly(e),true);$('.u-progress')?.setAttribute('hidden','');}})();}
 if(document.body.dataset.page==='programs'){
  document.querySelectorAll<HTMLButtonElement>('[data-program]').forEach(button=>button.addEventListener('click',()=>{const program=programs.find(p=>p.code===button.dataset.program)!;const status=$(`[data-plan-status="${program.code}"]`);void busy(button,async()=>{
   if(!platform.configuration.auth){message(status,'Înscrierile online se activează în curând. Prețul și beneficiile programului sunt afișate mai sus.',true);return;}

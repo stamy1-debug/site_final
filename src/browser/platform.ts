@@ -46,9 +46,10 @@ const platform={
  consentState:()=>saved?{...saved}:undefined,
  attribution:()=>{if(!saved?.analytics)return {};try{return sanitizeProperties(JSON.parse(localStorage.getItem('mate-attribution')??'{}').first??{});}catch{return {};}},
  auth:{
-  async signUp(email:string,password:string){await analytics.track('signup_started',{},crypto.randomUUID());const c=await client();const result=await c.auth.signUp({email,password,options:{emailRedirectTo:location.origin+'/auth/callback'}});if(result.error)throw result.error;if(result.data.user)await analytics.track('signup_completed',{},'signup:'+result.data.user.id);return result.data;},
+  async signUp(email:string,password:string,metadata:Record<string,unknown>){await analytics.track('signup_started',{},crypto.randomUUID());const c=await client();const result=await c.auth.signUp({email,password,options:{emailRedirectTo:location.origin+'/auth/callback',data:metadata}});if(result.error)throw result.error;if(result.data.user)await analytics.track('signup_completed',{},'signup:'+result.data.user.id);return result.data;},
   async signIn(email:string,password:string){const result=await(await client()).auth.signInWithPassword({email,password});if(result.error)throw result.error;return result.data;},
   async google(){const result=await(await client()).auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+'/auth/callback'}});if(result.error)throw result.error;return result.data;},
+  async updateUserMetadata(data:Record<string,unknown>){const result=await(await client()).auth.updateUser({data});if(result.error)throw result.error;return result.data;},
   async signOut(allDevices=false){const result=await(await client()).auth.signOut({scope:allDevices?'global':'local'});if(result.error)throw result.error;await analytics.track('logout_completed',{},crypto.randomUUID());},
   async resetPassword(email:string){const r=await(await client()).auth.resetPasswordForEmail(email,{redirectTo:location.origin+'/auth/callback?auth=recovery'});if(r.error)throw r.error;},
   async changePassword(password:string){const r=await(await client()).auth.updateUser({password});if(r.error)throw r.error;},

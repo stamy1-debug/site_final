@@ -9,6 +9,7 @@ import {sendOutbox} from './email.js';
 import {authorizeJob,jobSecret} from './jobs.js';
 import {exportRows,exportOrder} from './export.js';
 import {sanitizeProperties} from '../shared/privacy.js';
+import {minorRegistrationData} from '../shared/signup.js';
 const paths:Record<string,string[]>={health:['GET'],ready:['GET'],me:['GET','PATCH','DELETE'],'me/export':['GET'],plans:['GET'],entitlements:['GET'],subscriptions:['GET'],payments:['GET'],checkout:['POST'],portal:['POST'],consents:['GET','POST'],leads:['POST'],newsletter:['GET','POST','DELETE'],referrals:['GET','POST'],'referrals/claim':['POST'],'storage/signed-url':['POST'],'webhooks/stripe':['POST'],'internal/email':['POST'],'internal/jobs':['GET'],'admin/disable':['POST'],'admin/roles':['POST'],'admin/erasure':['POST']};
 const profileSchema=z.object({display_name:z.string().trim().max(100).optional(),grade:z.number().int().min(1).max(12).nullable().optional(),exam_type:z.enum(['EN','BAC']).nullable().optional()}).strict();
 const consentSchema=z.object({category:z.enum(['necessary','analytics','marketing','preferences']),granted:z.boolean(),policy_version:z.string().min(1).max(80)}).strict();
@@ -45,14 +46,14 @@ export async function route(req:Request):Promise<Response>{
    const limit=path==='me/export'?3:10;
    const allowed=assertDb(await serviceDb().rpc('consume_rate_limit',{bucket:`${user.id}:${path}`,max_hits:limit,window_seconds:60}));if(!allowed)throw new ApiError(429,'rate_limited');
   }
-  if(path==='me'&&req.method==='GET')return json({user:{id:user.id,email:user.email},profile,roles:assertDb(await db.from('user_roles').select('role'))});
+  if(path==='me'&&req.method==='GET')return json({user:{id:user.id,email:user.email,...minorRegistrationData(user.user_metadata??{})},profile,roles:assertDb(await db.from('user_roles').select('role'))});
   if(path==='me'&&req.method==='PATCH'){const values=profileSchema.parse(await body(req));return json({profile:assertDb(await db.from('profiles').update(values).eq('user_id',user.id).select().single())});}
   if(path==='me'&&req.method==='DELETE'){
    z.object({confirmation:z.literal('DELETE_ACCOUNT')}).strict().parse(await body(req));
    assertDb(await serviceDb().rpc('request_deletion',{uid:user.id}));return json({status:'REQUESTED',message:'Deletion and external erasure require the documented retention workflow.'},202);
   }
   if(path==='me/export'){
-   const exported:Record<string,unknown>={identity:{id:user.id,email:user.email},profile};
+   const exported:Record<string,unknown>={identity:{id:user.id,email:user.email,...minorRegistrationData(user.user_metadata??{})},profile};
    for(const table of ['user_roles','subscriptions','payments','entitlements','consents','leads','newsletter_subscribers','deletion_requests','coupon_redemptions','erasure_cases'])exported[table]=await exportRows(db,table,'user_id',user.id,'*',exportOrder(table));
    exported.referrals=await exportRows(db,'referrals','referrer_user_id',user.id,'referral_code,status,created_at,converted_at');
    exported.referral_rewards=await exportRows(db,'referral_rewards',null,user.id,'id,reward_type,reward_value,status,created_at');

@@ -1710,6 +1710,8 @@ Therefore:
 - keep privacy requirements in mind when implementing analytics;
 - ensure consent/legal requirements can evolve without architectural rewrite.
 
+Owner decision, 15 October 2026: a student who identifies as under 18 must provide a parent/guardian email and attest that permission exists at signup; no minimum age limit is planned. The product flow must minimize age data and keep the parent email private. Current implementation records the student's statement and timestamp only; it does not independently verify parental permission or send a parent confirmation link. A qualified legal review must confirm this model before enabling service to minors. Retention of minimal proof after account deletion must also be reviewed professionally.
+
 This PRD does not replace legal review.
 
 ---

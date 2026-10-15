@@ -1,8 +1,11 @@
 import {it,expect,vi,afterEach} from 'vitest';
 import {createClient} from '@supabase/supabase-js';
-import {sendOutbox} from '../src/server/email.js';
+import {emailMessage,sendOutbox} from '../src/server/email.js';
 afterEach(()=>vi.unstubAllEnvs());
 function fixture(){const calls:Array<{path:string;body:unknown}>=[];const db=createClient('https://fixture.supabase.co','fixture',{global:{fetch:async(input,init)=>{calls.push({path:new URL(String(input)).pathname,body:JSON.parse(String(init?.body??'{}'))});return new Response('[]',{headers:{'content-type':'application/json'}});}}});return {db,calls};}
+it('routes replies for transactional email to the approved contact address',()=>{
+ expect(emailMessage('welcome','Mate cu succes <notificari@matecusucces.com>','elev@example.test')).toMatchObject({from:'Mate cu succes <notificari@matecusucces.com>',to:'elev@example.test',replyTo:'stelutaenache05@gmail.com'});
+});
 it('does not consume delivery attempts while all providers are intentionally disabled',async()=>{
  vi.stubEnv('RESEND_API_KEY','');vi.stubEnv('POSTHOG_PUBLIC_KEY','');vi.stubEnv('EMAIL_SENDING_ENABLED','false');const f=fixture();await sendOutbox(f.db,'development');expect(f.calls).toEqual([]);
 });

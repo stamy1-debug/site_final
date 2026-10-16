@@ -7,10 +7,16 @@ it('only offers an exact configured RON monthly price for the selected program',
  expect(matchingPrice(programs[0],plans)).toBe('valid');expect(matchingPrice(programs[1],plans)).toBeUndefined();
 });
 it('rejects untrusted return URLs and only permits known local destinations',()=>{for(const url of ['https://evil.test','//evil.test','/\\evil.test','/auth/callback','/cont?token=secret'])expect(safeNext(url)).toBe('/cont');expect(safeNext('/programe?program=ELITE')).toBe('/programe?program=ELITE');});
-it('renders all program enrollment buttons as disabled Coming soon controls while keeping plan details',()=>{
+it('hides unpublished program prices and keeps disabled Coming soon enrollment controls',()=>{
  const html=renderPage(uiPages.find(page=>page.kind==='programs')!,'{}','https://matecusucces.test',true);
  expect((html.match(/<button[^>]*disabled[^>]*>Coming soon<\/button>/g)??[])).toHaveLength(4);
  expect(html).not.toContain('data-program=');
- expect(html).toContain('350<span>lei / lună</span>');
+ for(const amount of ['350','530','584','152'])expect(html).not.toContain(amount);
+ expect(html).not.toContain('lei / lună');
+ expect(html).not.toContain('PREȚURI LUNARE ÎN LEI');
+ expect(html).not.toContain('Vezi prețul');
+ expect(html).not.toContain('Oferta curentă include prețuri lunare');
+ expect(html).toContain('04 PROGRAME / O DIRECȚIE: ÎNAINTE');
+ expect(html).toContain('Detaliile abonamentelor vor fi publicate odată cu lansarea.');
  expect(html).toContain('Pentru clasa a VIII-a: recuperezi materia');
 });

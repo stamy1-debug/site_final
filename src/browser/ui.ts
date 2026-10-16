@@ -1,6 +1,6 @@
 import {authReady} from './platform.js';
 import {loadConsentChoice} from './consent.js';
-import {programs,matchingPrice,safeNext} from '../shared/programs.js';
+import {programs,safeNext} from '../shared/programs.js';
 import {signupMetadata} from '../shared/signup.js';
 const platform=window.matePlatform;
 const $=<T extends HTMLElement=HTMLElement>(selector:string)=>document.querySelector<T>(selector);
@@ -44,12 +44,7 @@ bindForm('#auth-form',async(form,status)=>{
 $('#google-signin')?.addEventListener('click',e=>{const button=e.currentTarget as HTMLButtonElement;let metadata:Record<string,unknown>;try{metadata=registrationDetails($('#google-minor-form') as HTMLFormElement,'google');}catch(error){message($('#form-status'),friendly(error),true);return;}rememberNext();try{sessionStorage.setItem('mate-google-registration',JSON.stringify(metadata));}catch{message($('#form-status'),'Nu putem păstra temporar datele de înscriere. Activează stocarea sesiunii și încearcă din nou.',true);return;}void busy(button,()=>platform.auth.google().then(()=>{}),$('#form-status'));});
 if(document.body.dataset.page==='callback'){void(async()=>{try{await authReady;const session=await platform.auth.session();if(!session.data.session)throw new Error('auth_link_invalid');const pending=sessionStorage.getItem('mate-google-registration');if(pending){await platform.auth.updateUserMetadata(JSON.parse(pending));sessionStorage.removeItem('mate-google-registration');}await platform.syncConsent();location.replace(new URL(location.href).searchParams.get('auth')==='recovery'?'/parola-noua':returnNext());}catch(e){try{sessionStorage.removeItem('mate-google-registration');}catch{/* session storage unavailable */}message($('#form-status'),friendly(e),true);$('.u-progress')?.setAttribute('hidden','');}})();}
 if(document.body.dataset.page==='programs'){
- document.querySelectorAll<HTMLButtonElement>('[data-program]').forEach(button=>button.addEventListener('click',()=>{const program=programs.find(p=>p.code===button.dataset.program)!;const status=$(`[data-plan-status="${program.code}"]`);void busy(button,async()=>{
-  if(!platform.configuration.auth){message(status,'Înscrierile online se activează în curând. Prețul și beneficiile programului sunt afișate mai sus.',true);return;}
-  const session=await platform.auth.session();if(!session.data.session){location.assign('/autentificare?next='+encodeURIComponent('/programe?program='+program.code));return;}
-  const response=await fetch('/api/v1/plans');if(!response.ok)throw new Error('service_unavailable');const catalog=await response.json();const price=matchingPrice(program,catalog.plans);if(!price){message(status,'Plata pentru acest program nu este încă activată. Nu a fost inițiată nicio tranzacție.',true);return;}await platform.checkout(price);
- },status);}));
- const selected=new URL(location.href).searchParams.get('program');if(programs.some(p=>p.code===selected)){const card=$('#'+selected!.toLowerCase());card?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'});message($(`[data-plan-status="${selected}"]`),'Programul ales. Apasă din nou pentru a continua spre plată.');}
+ // Program enrollment is paused; disabled buttons do not attach a payment or redirect action.
 }
 const consent=$<HTMLFormElement>('#consent-form');
 if(consent){
